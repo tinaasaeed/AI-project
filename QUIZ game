@@ -1,0 +1,320 @@
+import random    #this library will offer functions to generate choices
+
+def quiz_game():   #used def to
+    print('Hello Dear User 🤓')
+    
+    Introduction = input("What is Your Name? ")     
+    print("Welcome to TD Quiz 😎 " + Introduction)    
+
+    ask = input("Do you like to try our Game 🎮🕹️👾? (yes/no): ")   
+    if ask.lower() != "yes":  
+        quit()        
+    else:
+        print("\nLet's Start then 💬\n")
+
+    Quiz_questions = ("1. When is the First day of Spring?",                   
+                      "2. Who is Your Artificial Intelligence Instructor?",       
+                      "3. In Which planet do we live in?",
+                      "4. If you mix Red and White what color you will get?",
+                      "5. What is the short form of World Wide Website?", 
+                      "6. Where do we have pyramids?", 
+                      "7. What is the root of 64?", 
+                      "8. In which city you will find the Colosseum?",
+                      "9. Riyadh is the capital of which country?",
+                      "10. What can you catch but not throw?",
+                      "11. Everyone has me but nobody can lose me, What am I?"
+                      )
+
+    Mul_choice = (("A/ 20th Feb", "B/ 19th Mar", "C/ 21st Mar", "D/ 20th Mar"),    
+                  ("A/ Ms Rawia", "B/ Dr Rebaz", "C/ Dr Fryad", "D/ Mr Ari"),         
+                  ("A/ Mars", "B/ Earth", "C/ Sun", "D/ Jupiter"),
+                  ("A/ Blue", "B/ Pink", "C/ Yellow", "D/ Black"), 
+                  ("A/ WWE", "B/ WUU", "C/ WWW", "D/ WCS"),
+                  ("A/ Egypt", "B/ Erbil", "C/ United Kingdom", "D/ Sweden"),
+                  ("A/ 5", "B/ 8", "C/ 4", "D/ 6"),
+                  ("A/ Rome", "B/ Paris", "C/ Berlin", "D/ Iraq"),
+                  ("A/ Iran", "B/ Saudi Arabia", "C/ Iraq", "D/ Lebanon"),
+                  ("A/ Cold", "B/ Ball", "C/ Bird", "D/ Air"),
+                  ("A/ Money", "B/ Shadow", "C/ Shoes", "D/ Darkness")
+                  )
+
+    The_Answers = ("C/ 21st Mar",                 
+                   "B/ Dr Rebaz",                
+                   "B/ Earth", 
+                   "B/ Pink",
+                   "C/ WWW", 
+                   "A/ Egypt",
+                   "B/ 8",
+                   "A/ Rome",
+                   "B/ Saudi Arabia",
+                   "A/ Cold",
+                   "B/ Shadow")
+
+    Explanations = ("Spring begins on the 21st of March in the Northern Hemisphere.",
+                    "Dr. Rebaz is known for teaching AI.",
+                    "Earth is the planet we live on.",
+                    "Red and white mixed together make pink.",
+                    "WWW stands for World Wide Web.",
+                    "The pyramids are in Egypt.",
+                    "The square root of 64 is 8.",
+                    "The Colosseum is located in Rome.",
+                    "Riyadh is the capital of Saudi Arabia.",
+                    "You can catch a cold but you cannot throw it.",
+                    "Everyone has a shadow but nobody can lose it."
+                   )
+
+    score = 0   
+    quiz_count = 0   
+
+    class SimpleAI:
+        def __init__(self, correct_answers, explanations):
+            self.correct_answers = correct_answers
+            self.explanations = explanations
+            self.learned_answers = {}
+
+        def answer_question(self, question_idx):
+            if question_idx in self.learned_answers:
+                return self.learned_answers[question_idx]
+            if question_idx in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
+                return self.correct_answers[question_idx]
+            return random.choice([option.split('/ ')[0] for option in Mul_choice[question_idx]])
+
+        def learn_answer(self, question_idx, correct_answer):
+            self.learned_answers[question_idx] = correct_answer
+
+        def indicate_confidence(self, question_idx):
+            if question_idx in self.learned_answers:
+                return "High"
+            if question_idx in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
+                return "High"
+            return "Low"
+
+        def explain_answer(self, question_idx):
+            if question_idx in self.learned_answers or question_idx in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
+                return self.explanations[question_idx]
+            return "I guessed this answer ✅"
+
+    ai = SimpleAI(The_Answers, Explanations)
+    AI_answers = []
+    user_answers = []
+
+    for Q in Quiz_questions:  
+        print(" ⋆⭒˚.⋆🪐 ⋆⭒˚.⋆ ⋆⭒˚.⋆🪐 ⋆⭒˚.⋆ ⋆⭒˚.⋆🪐 ⋆⭒˚.⋆ ")   
+        print(Q) 
+        for Mulchoice in Mul_choice[quiz_count]:   
+            print(Mulchoice)      
+
+        ai_answer = ai.answer_question(quiz_count)
+        AI_answers.append(ai_answer)
+
+        # AI indicates confidence level
+        confidence = ai.indicate_confidence(quiz_count)
+        print(f"AI's Confidence Level 🤖 {confidence}")
+
+        user_choice = input("Do you want to answer or let the AI answer? (You/AI): ").lower()
+        if user_choice == 'user':
+            results = input("Write your Answer ⌨ ").upper()
+        else:
+            results = ai_answer.split('/ ')[0]
+
+        user_answers.append(results)
+
+        if results in The_Answers[quiz_count]:
+            score += 1
+            ai.learn_answer(quiz_count, results)
+        
+        quiz_count += 1   
+
+    print("\nQuiz Results 👀")
+    for idx, correct_answer in enumerate(The_Answers):      
+        print(f"Q{idx+1}: {Quiz_questions[idx]}")
+        print(f"Your Answer: {user_answers[idx]}")
+        print(f"AI's Answer: {AI_answers[idx]}")
+        print(f"Correct Answer: {correct_answer}")
+        print(f"Explanation: {ai.explain_answer(idx)}\n")   
+
+    print(f"Your Final Score📝 : {score}/{len(Quiz_questions)}")
+
+    percentage = (score / len(Quiz_questions)) * 100
+
+    if percentage >= 90:
+        grade = 'A'
+    elif percentage >= 80:
+        grade = 'B'
+    elif percentage >= 70:
+        grade = 'C'
+    elif percentage >= 60:
+        grade = 'D'
+    else:
+        grade = 'F'
+
+    print(f"Your Grade: {grade}")
+
+    replay = input("Do you want to play the quiz again? 🤔 (yes/no): ").lower()
+    if replay == "yes":
+        quiz_game()
+    else:
+        print("Thank you for playing 📋! Goodbye!")
+
+quiz_game()
+
+
+import random    #this library will offer functions to generate choices
+
+def quiz_game():   #used def to
+    print('Hello Dear User 🤓')
+    
+    Introduction = input("What is Your Name? ")     
+    print("Welcome to TD Quiz 😎 " + Introduction)    
+
+    ask = input("Do you like to try our Game 🎮🕹️👾? (yes/no): ")   
+    if ask.lower() != "yes":  
+        quit()        
+    else:
+        print("\nLet's Start then 💬\n")
+
+    Quiz_questions = ("1. When is the First day of Spring?",                   
+                      "2. Who is Your Artificial Intelligence Instructor?",       
+                      "3. In Which planet do we live in?",
+                      "4. If you mix Red and White what color you will get?",
+                      "5. What is the short form of World Wide Website?", 
+                      "6. Where do we have pyramids?", 
+                      "7. What is the root of 64?", 
+                      "8. In which city you will find the Colosseum?",
+                      "9. Riyadh is the capital of which country?",
+                      "10. What can you catch but not throw?",
+                      "11. Everyone has me but nobody can lose me, What am I?"
+                      )
+
+    Mul_choice = (("A/ 20th Feb", "B/ 19th Mar", "C/ 21st Mar", "D/ 20th Mar"),    
+                  ("A/ Ms Rawia", "B/ Dr Rebaz", "C/ Dr Fryad", "D/ Mr Ari"),         
+                  ("A/ Mars", "B/ Earth", "C/ Sun", "D/ Jupiter"),
+                  ("A/ Blue", "B/ Pink", "C/ Yellow", "D/ Black"), 
+                  ("A/ WWE", "B/ WUU", "C/ WWW", "D/ WCS"),
+                  ("A/ Egypt", "B/ Erbil", "C/ United Kingdom", "D/ Sweden"),
+                  ("A/ 5", "B/ 8", "C/ 4", "D/ 6"),
+                  ("A/ Rome", "B/ Paris", "C/ Berlin", "D/ Iraq"),
+                  ("A/ Iran", "B/ Saudi Arabia", "C/ Iraq", "D/ Lebanon"),
+                  ("A/ Cold", "B/ Ball", "C/ Bird", "D/ Air"),
+                  ("A/ Money", "B/ Shadow", "C/ Shoes", "D/ Darkness")
+                  )
+
+    The_Answers = ("C/ 21st Mar",                 
+                   "B/ Dr Rebaz",                
+                   "B/ Earth", 
+                   "B/ Pink",
+                   "C/ WWW", 
+                   "A/ Egypt",
+                   "B/ 8",
+                   "A/ Rome",
+                   "B/ Saudi Arabia",
+                   "A/ Cold",
+                   "B/ Shadow")
+
+    Explanations = ("Spring begins on the 21st of March in the Northern Hemisphere.",
+                    "Dr. Rebaz is known for teaching AI.",
+                    "Earth is the planet we live on.",
+                    "Red and white mixed together make pink.",
+                    "WWW stands for World Wide Web.",
+                    "The pyramids are in Egypt.",
+                    "The square root of 64 is 8.",
+                    "The Colosseum is located in Rome.",
+                    "Riyadh is the capital of Saudi Arabia.",
+                    "You can catch a cold but you cannot throw it.",
+                    "Everyone has a shadow but nobody can lose it."
+                   )
+
+    score = 0   
+    quiz_count = 0   
+
+    class SimpleAI:
+        def __init__(self, correct_answers, explanations):
+            self.correct_answers = correct_answers
+            self.explanations = explanations
+            self.learned_answers = {}
+
+        def answer_question(self, question_idx):
+            if question_idx in self.learned_answers:
+                return self.learned_answers[question_idx]
+            if question_idx in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
+                return self.correct_answers[question_idx]
+            return random.choice([option.split('/ ')[0] for option in Mul_choice[question_idx]])
+
+        def learn_answer(self, question_idx, correct_answer):
+            self.learned_answers[question_idx] = correct_answer
+
+        def indicate_confidence(self, question_idx):
+            if question_idx in self.learned_answers:
+                return "High"
+            if question_idx in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
+                return "High"
+            return "Low"
+
+        def explain_answer(self, question_idx):
+            if question_idx in self.learned_answers or question_idx in [0, 2, 3, 5, 6, 7, 8, 9, 10]:
+                return self.explanations[question_idx]
+            return "I guessed this answer ✅"
+
+    ai = SimpleAI(The_Answers, Explanations)
+    AI_answers = []
+    user_answers = []
+
+    for Q in Quiz_questions:  
+        print(" ⋆⭒˚.⋆🪐 ⋆⭒˚.⋆ ⋆⭒˚.⋆🪐 ⋆⭒˚.⋆ ⋆⭒˚.⋆🪐 ⋆⭒˚.⋆ ")   
+        print(Q) 
+        for Mulchoice in Mul_choice[quiz_count]:   
+            print(Mulchoice)      
+
+        ai_answer = ai.answer_question(quiz_count)
+        AI_answers.append(ai_answer)
+
+        # AI indicates confidence level
+        confidence = ai.indicate_confidence(quiz_count)
+        print(f"AI's Confidence Level 🤖 {confidence}")
+
+        user_choice = input("Do you want to answer or let the AI answer? (You/AI): ").lower()
+        if user_choice == 'user':
+            results = input("Write your Answer ⌨ ").upper()
+        else:
+            results = ai_answer.split('/ ')[0]
+
+        user_answers.append(results)
+
+        if results in The_Answers[quiz_count]:
+            score += 1
+            ai.learn_answer(quiz_count, results)
+        
+        quiz_count += 1   
+
+    print("\nQuiz Results 👀")
+    for idx, correct_answer in enumerate(The_Answers):      
+        print(f"Q{idx+1}: {Quiz_questions[idx]}")
+        print(f"Your Answer: {user_answers[idx]}")
+        print(f"AI's Answer: {AI_answers[idx]}")
+        print(f"Correct Answer: {correct_answer}")
+        print(f"Explanation: {ai.explain_answer(idx)}\n")   
+
+    print(f"Your Final Score📝 : {score}/{len(Quiz_questions)}")
+
+    percentage = (score / len(Quiz_questions)) * 100
+
+    if percentage >= 90:
+        grade = 'A'
+    elif percentage >= 80:
+        grade = 'B'
+    elif percentage >= 70:
+        grade = 'C'
+    elif percentage >= 60:
+        grade = 'D'
+    else:
+        grade = 'F'
+
+    print(f"Your Grade: {grade}")
+
+    replay = input("Do you want to play the quiz again? 🤔 (yes/no): ").lower()
+    if replay == "yes":
+        quiz_game()
+    else:
+        print("Thank you for playing 📋! Goodbye!")
+
+quiz_game()
